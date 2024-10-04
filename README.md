@@ -1,5 +1,16 @@
 # ⛄ 202230133 정지호
 
+## 10월 2일 강의
+
+### Page Routing
+
+- App routing ( Y / **_N_** )
+- src / ? ( Y / N )
+  - /pages/
+  - /src/pages/
+
+* app-router와 page-router는 같이 사용 X
+
 ## 9월 25일 강의
 
 ### Next.js 기초와 내장 컴포넌트
