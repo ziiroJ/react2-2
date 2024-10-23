@@ -1,5 +1,201 @@
 # ⛄ 202230133 정지호
 
+## 10월 23일 강의
+
+### Static Resource
+
+- 정적 자원 중 이미지 파일은 SEO에 많은 영향을 미침.
+- 누적 레이아웃 이동(CLS): 다운로드 시간이 많이 걸리며 렌더링 후 레이아웃 변경되는 등 UX에 영향을 미침.
+- Image컴포넌트 사용 => CLS문제 해결
+- lazy loading: 이미지 로드 시점을 필요할 때까지 지연시키는 기술
+
+* 이미지 사이즈 최적화로 사이즈를 1/10이하로 줄임
+* Placeholder 제공
+
+### Image component -local
+
+- image 컴포넌트 사용하면 다양한 props 전달 가능
+- 정적 자원은 기본적으로 public 디렉토리에 저장
+- 정적 자원 번들링 이후 변하지 않음
+- import 방식으로 image 넣을 시 public부터. 경로 지정 확실히.
+- import 방식은 이미지 크기 지정 안 해도 되지만 직접적으로 넣는 것은 지정해줘야함.
+
+```jsx
+import Image from "next/image";
+import foo from "/public/images/christmas.jpg";
+
+export default function About() {
+  return (
+    <>
+      <h1>About page</h1>
+      <Image
+        src="/images/fall-4589724_1280.jpg"
+        alt="낙엽"
+        width={300}
+        height={500}
+      />
+      <Image src={foo} alt="크리스마스" width={500} height={300} />
+    </>
+  );
+}
+```
+
+fill 속성을 사용하고싶다면 크기 지정을 빼줘야함.
+
+```jsx
+<Image src="/images/fall-4589724_1280.jpg" alt="낙엽" layout="fill" />
+```
+
+responsive 속성은 크기 지정 해줘야 함.
+
+```jsx
+<Image
+  src="/images/fall-4589724_1280.jpg"
+  width={300}
+  height={500}
+  layout="responsive"
+/>
+```
+
+### Image component - remote
+
+- next.confing.mjs 수정
+
+```jsx
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cdn.pixabay.com",
+      },
+    ],
+  },
+};
+
+export default nextConfig;
+```
+
+- 이미지 출력 코드
+- 서비스에 따라 도메인 차이 있을 수 있음.
+- 이미지 주소 복사 O, 링크 주소 복사 X
+
+### 4장. 디렉토리 구조 구성
+
+- Next.js에선 특정 파일과 디렉토리가 지정된 위치에 있어야 함.
+- \_app.js나 \_document.js파일, pages/ public/
+- Node_modules/: Next.js 프젝의 의존성 패키지를 설치하는 디렉토리
+- pages/: 애플리케이션의 페이지 파일을 저장하고 라우팅 시스템 관리
+- public/: 컴파일된 CSS 및 자바스크립트 파일, 이미지, 아이콘 등의 정적 자원 관리
+- styles/: 스타일링 포맷(CSS, SASS, LESS 등)과 관계없이 스타일링 모듈 관리
+
+### 컴포넌트 구성
+
+- 컴포넌트는 세 가지로 분류, 각 컴포넌트와 관련된 스타일 및 테스트 파일을 같은 곳에 두어야 함
+- 코드를 더 효율적으로 구성하기 위해 아토믹 디자인 원칙에 따라 디렉토리 구성
+- **atoms:** 가장 기본적인 컴포넌트 관리
+- **molecules:** atom에 속한 컴포넌트 여러 개를 조합해 복잡한 구조로 만든 컴포넌트 관리. <br> **ex )** input, label 합쳐 만든 새로운 컴포넌트
+- **organisms:** molecules와 atoms를 섞어 더 복잡하게 만든 컴포넌트 관리
+  <br> **ex )** footer, carousel 컴포넌트
+- **templates:** 컴포넌트를 어떻게 배치할지 결정해 사용자가 접근할 수 있는 페이지
+- Button 컴포넌트를 예를 들면 다음과 같이 최소한 세 개의 파일을 만들어야 함.
+- 컴포넌트, 스타일, 테스트 파일
+- 이렇게 컴포넌트를 구성하면 필요할 때 컴포넌트를 찾고 수정하기 쉬움.
+
+```
+mkdir components/atoms/Button
+cd components/atoms/Button
+touch index.js
+touch button.test.js
+touch button.styled.js or style.module.css
+```
+
+### 유틸리티 구성
+
+- 컴포넌트를 만들지 않는 코드 파일을 유틸리티 스크립트라고 함.
+- 예를 들어 애플리케이션의 log파일을 저장하는 코드가 있다면 이것을 컴포넌트로 만들 필요가 있을까?
+- 이렇게 렌더링에 필요한 컴포넌트가 아닌 기타 필요한 스크립트가 있다면 utilities/디렉토리에 별도로 관리하는 것이 좋음
+- 각 우틸리티에 맞는 테스트 파일도 만듦.
+
+```
+cd utilities/
+touch time.js
+touch time.test.js
+touch localStorage.js
+touch localStorage.test.js
+```
+
+### 정적 자원의 구성
+
+- 정적 자원은 public/ 디렉토리에서 관리
+- 일반적인 웹 애플리케이션에선 다음과 같은 정적 자원 사용
+  - 이미지
+  - 컴파일한 js파일
+  - 컴파일한 css 파일
+  - 아이콘
+  - manifest.json, robot.txt 등의 정적파일
+- public.assets/ 디렉토리를 만들고 파일 유형별로 다시 디렉토리 추가
+- 저장된 파일에 접근하고자 하면 예와 같이 public을 제외한 주소를 써주면 됨.
+- icons/디렉토리는 주로 웹 앱 매니페스트에 제공할 아이콘을 관리함.
+
+### 스타일 파일 구성
+
+- 스타일 파일은 앱에서 어떤 스타일 관련 기술을 사용하는가에 따라 구성이 달라짐.
+- Emotion, styled-components, JSS 와 같은 CSS-in-JS 프레임워크의 경우 컴포넌트별 스타일 파일을 만듦.
+- 만일 컬러 팔레트, 테마, 미디어 쿼리와 같은 공통 스타일의 경우 styles/디렉토리를 사용.
+
+### lib 파일 수성
+
+- lib 파일은 서드파티 라이브러리를 감싸는 스크립트를 말함
+- lib 파일은 특정 라이브러리에 특화된 것.
+- GraphQL을 사용한다면, 클라이언트 초기화 하고, 질의문과 뮤테이션을 저장하는 등의 작업이 필요
+- 이런 스크립트를 좀 더 모듈화하기 위해 프로젝트 root에 lib/fraphql/=디렉토리를 만듦.
+
+```
+next-js-app
+- lib/
+  -graphql/
+    -index.js
+    -queries/
+      -query1.js
+      -query2.js
+    -mutations/
+      -mutation1.js
+      -mutation2.js
+```
+
+### 데이터 불러오기
+
+- Next는 클라이언트와 서버 모두에서 데이터 불러오기 가능
+- 서버는 다음 두 가지 상황에서데이터를 불러올 수 있음
+  1. 정적 페이지를 만들 때 getStaticProps 함수를 사용해, 빌드 시점에 데이터를 불러올 수 있음
+  2. 서버가 페이지를 렌더링 할때 getServerSideProps를 통해, 실행 도중 데이터를 불러올 수도있음.
+- 데이터 베이스에서 데이터를 가져 올 수도 있지만 안전하지 않기에 권장X 데이터베이스의 접근은 백엔드에서 처리하는 것이 좋음.
+- Next는 프론트만 담당하는 것이 좋음.
+
+### 서버 데이터 불러오기
+
+- 서버에서는 두 가지 방법으로 HTTP 요청을 만들고 처리할 수 있음.
+
+  1. Node의 내장 HTTP 라이브러리 사용
+
+  - 다만 서드파티 HTTP클라이언트와 비교했을때 설정하고 처리해야할 작업이 많음
+
+  2. HTTP 클라이언트 라이브러리 사용 가능 ex) Axios
+
+- Axios 사용이유
+  1. 클라이언트 서버 모두에서 동일하게 사용할 수 있고,
+  2. 가장 많이 사용.
+
+### 서버에서 REST API 사용하기
+
+- REST API 를 호출할 땐 public API를 호출할 것인지, private API를 호출할 것인지를 먼저 확인해야함.
+- Public API는 어떤 인증이나 권한도 필요 없으며 누구나 호출 가능
+- Private API는 호출 전 반드시 인증과 권한 검사 과정을 거쳐야 함.
+- 구글 API를 사용하고 싶으면 OAuth 2.0을 사용해야함. (거의 산업 표준)
+- 이 외 API들도 어떻게 인증과 권한 검사 과정을 거치는지 반드시 확인해야함.
+
 ## 10월 4일 강의
 
 ### Page Project Layout \_app
