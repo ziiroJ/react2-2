@@ -1,5 +1,141 @@
 # ⛄ 202230133 정지호
 
+## 10월 25일 강의
+
+### 클라이언트에서 REST API 사용하기
+
+- getServerSideProps나 getStaticProps함수 내에서 REST APIㄹ르 호출하면 서버가 데이터를 가져오지만,
+- 그 외의 컴포넌트 내에서 데이터를 불러오는 작업은 클라이언트가 실행
+- 클라이언트는 주로 두 가지 시점에 데이터를 불러옴.
+  - 1. 컴포넌트가 마운트된 후
+  - 2. 특정 이벤트가 발행한 후
+- Next라고 하여 React와 다른 특별한 방법을 사용해야 할 필요는 없음.
+- 브라우저의 내장 fetch API 혹은 Axios와 같은 외부 라이브러리를 사용해서 HTTP 요청을 보냄.
+
+### TailwindCSS 패키지
+
+- TailwindCSS 코드가 굉장히 기나, 자유롭게 디자인 가능.
+- 요즘 현업에서 쓰는 사람들 多
+
+### REST API - 기본 설계 규칙
+
+- URL은 동사보다 명사, 대문자보단 소문자를 사용
+- 주소의 마지막에 슬래시(/)를 포함하지 않기.
+- 단어를 연결할 때는 하이픈(-)을 사용
+- 파일확장자는 URL에 포함하지 않음
+- URL에 메소드를 포함하지 않음.
+
+### axios란?
+
+- next.js 에서 REST API를 다룰 때 보통 axios 와 fetch 중 하나를 선택하는 경우 多
+
+### axios
+
+#### 장점
+
+- 간편한 문법
+- HTTP 요청 취소
+- 요청 및 응답 인터셉터
+- 진보된 오류 처리
+
+#### 단점
+
+- 추가 패키지를 설치 해야함.
+
+### Fetch API
+
+#### 장점
+
+- 내장 API: 브라우저에 내장되어 있어 별도의 설치가 필요없음.
+- Promise 기반: 비동기 작업 처리에 익숙한 구조
+- 스트림 처리: 데이터를 스트리밍을 처리할 수 있는 기능이 있어, 큰 파일을 처리하는데 용이
+
+#### 단점
+
+- json 변환 수동 처리: 응답에서 json으로 변환할 때 res.json()을 호출해야함.
+- 에러 처리의 복잡성: HTTP 오류 코드에 대한 처리가 약간 더 복잡.
+  - 기본적으로 fetch는 네트워크 오류만들 reject 함.
+
+### Axios 사용하기
+
+- axios 사용법
+
+```js
+const res = await axios.get("https://api.example.com");
+const products = res.data; // Axios에서 응답 본문의 데이터를 가져옴
+```
+
+- Fetch API 사용 예시
+
+```js
+fetch("https://api.example.com")
+  .then((res) => res.json()) // fetch에서는 .json()으로 데이터를 추출
+  .then((data) => {
+    console.log(data); // 여기에 실제 응답 데이터가 있음.
+  });
+```
+
+- asios.get()을 통해 받아온 응답 객체인 res는 단순히 JSON 데이터만 담고 있는 것이 아니라, HTTP 통신과 관련된 여러 정보들을 함께 포함함.
+- res.status: HTTP 응답 상태 코드
+- res.headers: 서버로부터 받은 헤더 정보
+- res.config: 요청에 대한 설정 정보
+- res.statusText: 응답 상태에 대한 설명
+- res.data: 서버가 실제로 전송한 데이터
+
+#### json
+
+```json
+{
+  "token": {
+    "access_token": "1e4a36bckde5tdfed348trkjy4",
+    "userId": 0
+  },
+  "test": [
+    {
+      "id": 1,
+      "name": "KIM",
+      "title": "data.json 파일 만들기",
+      "body": "project root에 생성"
+    },
+    {
+      "id": 2,
+      "name": "Lee",
+      "title": "json 설치",
+      "body": "백엔드 만들기 전"
+    }
+  ]
+}
+```
+
+#### 사용 예
+
+```jsx
+import axios from "axios";
+
+export default async function RestApi() {
+  const res = await axios.get("http://localhost:3001/test");
+  const users = await res.data;
+  return (
+    <ul>
+      {users.map((user) => (
+        <div key={user.id}>
+          <h1>{user.id}</h1>
+          <h3>{user.name}</h3>
+          <h3>{user.title}</h3>
+          <h3>{user.body}</h3>
+        </div>
+      ))}
+    </ul>
+  );
+}
+```
+
+- 위 코드는 비동기 데이터 로딩과 상태관리가 제대로 고려되지 않았기에 몇 가지 문제가 있음.
+- 특히, Next.js와 같은 리액트 기반 앱에서 비동기 데이터 처리할 떄 렌더링 주기에 맞게 상태 관리 해야함.
+
+- useState: users를 useState로 관리하여, 데이터를 불러온 후 렌더링 할 수 있게 햇음.
+- useEffect: 컴포넌트가 처음 렌더링될때 한 번만 데이ㅓㅌ를가져오기 위해 useEffect사용
+
 ## 10월 23일 강의
 
 ### Static Resource
