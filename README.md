@@ -1,5 +1,120 @@
 # ⛄ 202230133 정지호
 
+## 11월 20일 강의
+
+## Directory 구조
+
+#### [ features Directory ]
+
+- 특정 기능이나 도메인 별로 코드를 구성하는 데 사용
+- 사용자 인증 기능, 프로필 관리 기능 등 각 기능과 관련된 상태 관리, AP 요청, 슬라이스,
+  컴포넌트 등을 보관
+- 재 사용이 불가능하거나 가능하더라도 많은 수정을 해야 하는 컴포넌트를 관리
+
+## Redux 주요 File의 역할
+
+#### Redux Slice
+
+- Slice는 Redux Toolkit에서 사용되는 용어로, 특정 기능과 관련된 상태와 reducer 함수의 모
+  음
+- Slice라는 이름은 애플리케이션 상태의 한 부분을 의미
+- Redux Toolkit의 createslice 함수를 사용하면 특정 기능과 관련된 상태, 액션, reducer를 한
+  곳에서 정의할 수 있어 관리하기가 용이
+
+## Context API vs. Redux
+
+### [ Redux ]
+
+- Redux는 전역 상태를 관리하기 위한 독립적인 state 관리 라이브러리
+- 상태의 변경을 예측 가능하게 하고, 전역 state 관리를 더 구조적으로 지원
+- store, reducer, action 등의 개념을 사용해 state와 state dispatch를 관리
+
+#### 장점
+
+- 명확한 상태 관리 구조:액션과 reducer를 통해 state dispatch 과정을 예측 가능하게 만들
+  고, 코드의 가독성을 높임
+- 미들웨어 지원: redux-thunk, redux-saga와 같은 미들웨어를 사용해 비동기 로직을 쉽게
+  처리
+- 디버깅 도구: Redux DevTools를 통해 상태 변화 및 디버깅이 용이
+- 모든 프레임워크와 호환 : React뿐만 아니라 다른 Javascript 프레임워크와도 함께 사용O
+
+#### 단점
+
+- 설정과 코드 복잡도 : Context AP1에 비해 설정이 복잡하며, boilerplate 코드가 많이 필요
+- 추가 라이브러리 필요: Redux자체가 외부 라이브러리이므로 설치 및 유지 관리가 필요
+- 작은 애플리케이션에는 과한 설정: 단순한 상태 관리가 필요한 작은 애플리케이션에서는
+  과도한 설정일 수 있음
+
+## 11월 13일 강의
+
+#### Context API 개요
+
+- Context는 Ux구축에 많이 사용되는 React의 기능
+- React는 16.3 버전부터 정식적으로 context api 를 지원
+- 일반적으로 props는 부모에서 자식으로 전달되는 단방향 통신을 함.
+- Context APl는 특정 component가 props를 사용하지 않고, 하위 component를 포함한 모
+  든 component에 데이터를 공유할 수 있는 기능을 제공함.
+- 즉 "전역"으로 데이터를 사용할 수 있도록 해줌.
+- 사용자의 로그인 상태나, 쇼핑커트의 물품 수량 등을 표시할 때 사용됨.
+- Context API는 createContext, Provider, useContext 개념만 알면 적용 가능.
+
+#### Props 흐름의 이해
+
+• Nextjs의 데이터 흐름은 단방향으로 이루어짐.
+
+- 즉, parents에서 child component의 방향으로 props의 흐름이 이뤄짐.
+- 따라서 계층 구조가 복잡해 지면 Props Drilling 문제 발생
+- Props Driling은 여러 개의 component를 지나 props가 전달 되면서 발생하는 문제
+
+• Props Drilling은 다음과 같은 문제를 발생 시킴.
+
+1. 중간에 위치한 component에 불필요한 props를 전달해야 하는 문제.
+2. 타겟 component까지 props가 전달되지 않을 경우 원인 규명의 어려움.
+3. 필요 이상으로 코드가 복잡해 지는 문제
+
+#### 이런 문제를 해결하려면 props를 전역으로 사용하면 됩니다.
+
+- Nextjs에서 props를 전역으로 사용하기 위해서 Context API, Redux 등을 사용합니다.
+
+## 11월 06일 강의
+
+### UI 프레임 워크
+
+#### Tailwind CSS
+
+- 다른 프레임워크랑 다르게 css 규칙만 제공
+- 자바스크립트 모듈이나 리액트 컴포넌트를 제공하지 않기 때문에 필요한 경우 직접 만들어야함
+- 변수값을 조정하여 개성있는 디자인을 만들 수 있다 (자유도 높음)
+- dark mode 및 light mode를 쉽게 적용 가능
+- 빌드 시점을 사용하지 않는 클래스는 제거 되기 때문에 높은 수준의 최적화 지원
+
+### Headless Ui
+
+- TailwindCSS를 만든 Tailwind Labs 팀의 무료 오픈 소스 프로젝트
+- TailwindCSS는 모달이나 버튼 등 동적인 컴포넌트를 만들려면 직접 자바 스크립트 코드를 작성해야하지만 이러한 단점을 보완하기 위해 Headless UI가 만들어짐
+- Headless Ui는 CSS 클래스를 제공하는 것이 아니라 동적 컴포넌트만 제공
+
+## 10월 30일 강의
+
+### styled JSX
+
+- styled JSX는 CSS-in-JS 라이브러리(내장 모듈로 설치 X)
+
+### CSS-in-JS
+
+#### 단점
+
+- IDE나 코드 편집기 등 개발 도구에 대한 지원 부족
+- 문법 하이라이팅, 자동 완성, 린트(lint) 기능 제공 X
+- 코드 내에서 CSS에 대한 의존성이 점점 커지기에 앱 번들도 커지고 느려짐.
+- 서버에 미리 CSS를 생성해도 클라이언트에서 리액트 하이드레이션이 끝나면 CSS를 다시 생성해야함.
+- 때문에 실행 시점에 부하가 커지며, 웹 앱이 계속 느려지게 됨. 기능을 추가 할 수록 현상이 多;
+
+### SASS
+
+- Next에서 기본으로 지원하는 전처리기(패키지 설치 필요)
+- SASS 및 SCSS(Sassy CSS) 문법으로 CSS Modlue 만들고 사용 O
+
 ## 10월 25일 강의
 
 ### 클라이언트에서 REST API 사용하기
